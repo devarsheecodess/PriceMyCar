@@ -51,7 +51,7 @@ def predict():
         sample_input = np.array([[int(car_age), manufacturer, condition, fuel, int(odometer), transmission, car_type]])  
 
         # Predict price
-        predicted_price = model.predict(sample_input)*13
+        predicted_price = model.predict(sample_input)*83.90
 
         return jsonify({"price": predicted_price[0]})
     except Exception as e:
