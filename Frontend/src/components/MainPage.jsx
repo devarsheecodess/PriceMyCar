@@ -1,24 +1,53 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import axios from 'axios';
 
 const MainPage = () => {
+  const [formData, setFormData] = useState({ year: 0, manufacturer: 0, condition: 0, fuel: 0, odometer: 0, transmission: 0, car_type: 0 });
+  const [predictedPrice, setPredictedPrice] = useState(0);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!formData.year || !formData.manufacturer || !formData.condition || !formData.fuel || !formData.odometer || !formData.transmission || !formData.car_type) {
+        alert('Please fill all the fields');
+        return;
+      }
+      const response = await axios.get('http://localhost:5000/predict', { params: formData });
+      setPredictedPrice(response.data.price);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-10">
       <div className="max-w-4xl mx-auto">
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-4xl font-bold text-center mb-12 "
+          className="text-4xl font-bold text-center mb-5 bg-gradient-to-r from-yellow-400 to-yellow-200 bg-clip-text text-transparent"
         >
           Price My Car
         </motion.h1>
 
-        <motion.form 
+        {predictedPrice > 0 && (
+          <h3 className="text-xl font-semibold text-blue-400 mb-5 rounded-lg shadow-md text-center">
+            Predicted Price: {predictedPrice.toLocaleString("en-IN")}/-
+          </h3>
+        )}
+
+
+
+        <motion.form
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          action="/predict" 
-          method="POST"
           className="space-y-6 bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700"
         >
           <div className="grid md:grid-cols-2 gap-6">
@@ -27,13 +56,15 @@ const MainPage = () => {
               <label htmlFor="car_type" className="block text-sm font-medium text-gray-300">
                 Car Type
               </label>
-              <select 
-                id="car_type" 
-                name="car_type" 
+              <select
+                id="car_type"
+                name="car_type"
+                onChange={handleChange}
+                value={formData.car_type || ""}
                 required
                 className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               >
-                <option value="" disabled selected>Select Car Type</option>
+                <option value="" disabled>Select Car Type</option>
                 <option value="0">Sedan</option>
                 <option value="1">SUV</option>
                 <option value="2">Truck</option>
@@ -48,6 +79,7 @@ const MainPage = () => {
                 <option value="11">Electric</option>
                 <option value="12">Sports Car</option>
               </select>
+
             </div>
 
             {/* Manufacturer */}
@@ -55,13 +87,15 @@ const MainPage = () => {
               <label htmlFor="manufacturer" className="block text-sm font-medium text-gray-300">
                 Manufacturer
               </label>
-              <select 
-                id="manufacturer" 
-                name="manufacturer" 
+              <select
+                id="manufacturer"
+                name="manufacturer"
+                onChange={handleChange}
+                value={formData.manufacturer || ""}
                 required
                 className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               >
-                <option value="" disabled selected>Select Manufacturer</option>
+                <option value="" disabled>Select Manufacturer</option>
                 <option value="0">Toyota</option>
                 <option value="1">Ford</option>
                 <option value="2">BMW</option>
@@ -75,13 +109,15 @@ const MainPage = () => {
               <label htmlFor="condition" className="block text-sm font-medium text-gray-300">
                 Condition
               </label>
-              <select 
-                id="condition" 
-                name="condition" 
+              <select
+                id="condition"
+                name="condition"
+                onChange={handleChange}
+                value={formData.condition || ""}
                 required
                 className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               >
-                <option value="" disabled selected>Select Condition</option>
+                <option value="" disabled>Select Condition</option>
                 <option value="0">Fair</option>
                 <option value="1">Good</option>
                 <option value="2">Excellent</option>
@@ -94,13 +130,15 @@ const MainPage = () => {
               <label htmlFor="fuel" className="block text-sm font-medium text-gray-300">
                 Fuel Type
               </label>
-              <select 
-                id="fuel" 
-                name="fuel" 
+              <select
+                id="fuel"
+                name="fuel"
+                onChange={handleChange}
+                value={formData.fuel || ""}
                 required
                 className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               >
-                <option value="" disabled selected>Select Fuel Type</option>
+                <option value="" disabled>Select Fuel Type</option>
                 <option value="0">Petrol</option>
                 <option value="1">Diesel</option>
                 <option value="2">Electric</option>
@@ -113,13 +151,15 @@ const MainPage = () => {
               <label htmlFor="transmission" className="block text-sm font-medium text-gray-300">
                 Transmission Type
               </label>
-              <select 
-                id="transmission" 
-                name="transmission" 
+              <select
+                id="transmission"
+                name="transmission"
+                onChange={handleChange}
+                value={formData.transmission || ""}
                 required
                 className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               >
-                <option value="" disabled selected>Select Transmission</option>
+                <option value="" disabled>Select Transmission</option>
                 <option value="0">Manual</option>
                 <option value="1">Automatic</option>
               </select>
@@ -130,12 +170,14 @@ const MainPage = () => {
               <label htmlFor="odometer" className="block text-sm font-medium text-gray-300">
                 Kms Covered
               </label>
-              <input 
-                type="number" 
-                id="odometer" 
-                name="odometer" 
-                min="0" 
-                required 
+              <input
+                type="number"
+                id="odometer"
+                name="odometer"
+                onChange={handleChange}
+                value={formData.odometer}
+                min="0"
+                required
                 placeholder="Enter kilometers driven"
                 className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               />
@@ -146,13 +188,14 @@ const MainPage = () => {
               <label htmlFor="year" className="block text-sm font-medium text-gray-300">
                 Purchase Year
               </label>
-              <input 
-                type="number" 
-                id="year" 
-                name="year" 
-                min="1950" 
-                max="2024" 
-                required 
+              <input
+                type="number"
+                id="year"
+                name="year"
+                onChange={handleChange}
+                value={formData.year}
+                max="2025"
+                required
                 placeholder="Enter purchase year"
                 className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               />
@@ -162,8 +205,8 @@ const MainPage = () => {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            type="submit"
-            className="cursor-pointer w-full mt-8 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+            onClick={handleSubmit}
+            className="cursor-pointer w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
           >
             Predict Price
           </motion.button>
