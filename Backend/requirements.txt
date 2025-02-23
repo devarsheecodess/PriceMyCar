@@ -4,3 +4,4 @@ numpy
 joblib
 python-dotenv
 gdown
+gunicorn
