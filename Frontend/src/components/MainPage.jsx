@@ -2,10 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import axios from 'axios';
+import Loader from './Loader';
 
 const MainPage = () => {
   const [formData, setFormData] = useState({ year: 0, manufacturer: 0, condition: 0, fuel: 0, odometer: 0, transmission: 0, car_type: 0 });
   const [predictedPrice, setPredictedPrice] = useState(0);
+  const [loading, setLoading] = useState(false);
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleChange = (e) => {
@@ -15,6 +17,7 @@ const MainPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true)
       if (!formData.year || !formData.manufacturer || !formData.condition || !formData.fuel || !formData.odometer || !formData.transmission || !formData.car_type) {
         alert('Please fill all the fields');
         return;
@@ -24,6 +27,8 @@ const MainPage = () => {
       setFormData({ year: 0, manufacturer: 0, condition: 0, fuel: 0, odometer: 0, transmission: 0, car_type: 0 });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -38,8 +43,10 @@ const MainPage = () => {
           Price My Car
         </motion.h1>
 
+        {loading && <Loader />}
+
         {predictedPrice > 0 && (
-          <h3 className="text-xl font-semibold text-blue-400 mb-5 rounded-lg shadow-md text-center">
+          <h3 className="text-xl font-semibold text-blue-400 mb-5 rounded-lg text-center">
             Predicted Price: Rs. {predictedPrice.toLocaleString("en-IN")}
           </h3>
         )}
@@ -206,7 +213,7 @@ const MainPage = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleSubmit}
-            className="cursor-pointer w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+            className="cursor-pointer outline-0 w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
           >
             Predict Price
           </motion.button>
