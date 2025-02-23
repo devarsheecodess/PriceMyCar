@@ -5,3 +5,7 @@ joblib
 python-dotenv
 gdown
 gunicorn
+pandas
+matplotlib
+seaborn
+scikit-learn
