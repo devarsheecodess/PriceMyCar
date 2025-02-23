@@ -6,6 +6,7 @@ import axios from 'axios';
 const MainPage = () => {
   const [formData, setFormData] = useState({ year: 0, manufacturer: 0, condition: 0, fuel: 0, odometer: 0, transmission: 0, car_type: 0 });
   const [predictedPrice, setPredictedPrice] = useState(0);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,8 +19,9 @@ const MainPage = () => {
         alert('Please fill all the fields');
         return;
       }
-      const response = await axios.get('http://localhost:5000/predict', { params: formData });
+      const response = await axios.get(`${BACKEND_URL}/predict`, { params: formData });
       setPredictedPrice(response.data.price);
+      setFormData({ year: 0, manufacturer: 0, condition: 0, fuel: 0, odometer: 0, transmission: 0, car_type: 0 });
     } catch (error) {
       console.log(error);
     }
@@ -38,11 +40,9 @@ const MainPage = () => {
 
         {predictedPrice > 0 && (
           <h3 className="text-xl font-semibold text-blue-400 mb-5 rounded-lg shadow-md text-center">
-            Predicted Price: {predictedPrice.toLocaleString("en-IN")}/-
+            Predicted Price: Rs. {predictedPrice.toLocaleString("en-IN")}
           </h3>
         )}
-
-
 
         <motion.form
           initial={{ opacity: 0 }}
